@@ -1,11 +1,7 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { StyleSheet } from "react-native";
 import styled from "styled-components/native";
 
-import { Icon } from "../../components/index";
-import { CurrentType } from '../../assets/@types/requestReturn';
-
-import { PanGestureHandler, gestureHandlerRootHOC } from "react-native-gesture-handler";
 import Animated, {
     runOnJS,
     useSharedValue,
@@ -13,26 +9,37 @@ import Animated, {
     useAnimatedStyle,
     useAnimatedGestureHandler,
 } from "react-native-reanimated";
+import { ForecastItem, Icon, WeatherForecastList } from "../../components";
+import { CurrentType, ForecastType } from "../../assets/@types/requestReturn";
+import { RequestWeather } from "../../services/api/requestWeather";
+import { PanGestureHandler, gestureHandlerRootHOC } from "react-native-gesture-handler";
+import { InfoCard } from "./common/infoCard";
 
-type props = {
+type DetailsProps = {
     data: CurrentType
     modalVisible: () => void
 }
 
-export const Details = gestureHandlerRootHOC(({ modalVisible, data }: any) => {
+export const Details = gestureHandlerRootHOC(({ data, modalVisible }: any) => {
 
-    const start = useSharedValue(350)
-    const offset = useSharedValue(350)
+    const [forecastData, setForecastData] = useState<ForecastType>()
+
+    const start = useSharedValue(200)
+    const offset = useSharedValue(200)
+
+    useEffect(() => {
+        getForecast()
+    }, [])
 
     const closeModal = (event: any) => {
-        event.absoluteY > 500 && modalVisible()
+        event.absoluteY > 450 && modalVisible()
     }
 
     const eventHandler = useAnimatedGestureHandler({
-        onActive: (event, ctx) => {
+        onActive: (event) => {
             offset.value = event.translationY + start.value
         },
-        onEnd: (event, ctx) => {
+        onEnd: (event) => {
             runOnJS(closeModal)(event)
             start.value = offset.value
         },
@@ -40,7 +47,7 @@ export const Details = gestureHandlerRootHOC(({ modalVisible, data }: any) => {
 
     const animatedStyle = useAnimatedStyle(() => {
 
-        const translateY = interpolate(offset.value, [350, 750], [350, 750], 'clamp')
+        const translateY = interpolate(offset.value, [200, 718], [200, 718], 'clamp')
         return {
             transform: [
                 { translateY: translateY },
@@ -48,18 +55,24 @@ export const Details = gestureHandlerRootHOC(({ modalVisible, data }: any) => {
         }
     })
 
+    const getForecast = async () => {
+        await RequestWeather.getForecast(data.coord.lat, data.coord.lon)
+            .then(({ data }) => {
+                setForecastData(data)
+            })
+            .catch(err => console.log(err))
+    }
+
     return (
         <Animated.View style={[styles.detailsModal, animatedStyle]}>
             <PanGestureHandler onGestureEvent={eventHandler} hitSlop={styles.hitSlop} >
                 <ModalButton />
             </PanGestureHandler>
-            <TextContainer>
-                <EmphasisText>{`${data.main.temp}°C`}</EmphasisText>
-                <Text>{`Feelslike: ${data.main.fells_like}°C`}</Text>
-                <Text>{`Humidity: ${data.main.humidity}%`}</Text>
-                <Text>{`Wind Speed: ${data.wind.speed} km/h`}</Text>
-                <Text>{`Pressure: ${data.main.pressure} MB-milibar`}</Text>
-            </TextContainer>
+            <Wrapper>
+                <TemperatureText>{`${data.main.temp.toFixed()}°C`}</TemperatureText>
+                <InfoCard forecastData={forecastData!} />
+            </Wrapper>
+            <WeatherForecastList forecastData={forecastData!} />
         </Animated.View>
     )
 })
@@ -74,7 +87,7 @@ const styles = StyleSheet.create({
         width: '100%',
         borderTopLeftRadius: 30,
         borderTopRightRadius: 30,
-        backgroundColor: "#1A599E",
+        backgroundColor: "#363a3f",
     },
     hitSlop: {
         top: 20,
@@ -86,27 +99,19 @@ const styles = StyleSheet.create({
 
 const Container = styled.View`
     flex: 1;
-    width: 100%;
-    height: 100%;
-    justify-content: flex-end;
+    padding: 10px;
+    align-items: center;
+    flex-direction: row;
 `;
 
-const EmphasisText = styled.Text`
+const TemperatureText = styled.Text`
     color: white;
-    font-size: 60px;
-    margin-top: 5px;
+    font-size: 70px;
+    margin-top: 10px;
     font-weight: 600;
 `;
 
-const Text = styled.Text`
-    color: white;
-    font-size: 24px;
-    font-weight: 500;
-    line-height: 25px;
-    padding-bottom: 8px;
-`;
-
-const TextContainer = styled.View`
+const Wrapper = styled.View`
     align-items: center;
     justify-content: center;
 `;
@@ -115,9 +120,9 @@ const ModalButton = Animated.createAnimatedComponent(styled.View`
     width: 160px;
     height: 10px;
     margin-top: 6px;
-    border-radius: 10px;
     align-self: center;
-    background-color: #0F2547;
+    border-radius: 10px;
+    background-color: #1c1e20;
 `);
 
 // export const Container = Animated.createAnimatedComponent(styled.View``)

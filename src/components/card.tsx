@@ -28,8 +28,14 @@ const SunSet = '../assets/img/sunset.png';
 const Raining = '../assets/img/raining.png';
 const Snowing = '../assets/img/snowing.jpg';
 const SunRise = '../assets/img/sunrise.png';
-// { name, main, sys, weather, timezone }
-export const Card = ({ data, removeCity }: any) => {
+
+type CardProps = {
+    data: CurrentType,
+    removeCity: (city: string) => void
+}
+
+export const Card = ({ data, removeCity }: CardProps) => {
+
     const now = new Date()
     const start = useSharedValue(0)
     const offset = useSharedValue(0)
@@ -112,7 +118,7 @@ export const Card = ({ data, removeCity }: any) => {
                     imageStyle={{ borderRadius: 15 }}
                 >
                     <TextContainer>
-                        <EmphasisText>{`${data.main.temp}°C`}</EmphasisText>
+                        <EmphasisText>{`${data.main.temp.toFixed()}°C`}</EmphasisText>
                         <Text>{`${data.name}, ${data.sys.country}`}</Text>
                         <Text>{`${data.weather[0].description}`}</Text>
                     </TextContainer>
@@ -150,10 +156,10 @@ const Container = styled.TouchableOpacity`
 `;
 
 const ImageBackground = styled.ImageBackground`
-    width: ${cardWidth}px;
     padding-top: 10px;
-    height: ${cardHeight}px;
     align-items: center;
+    width: ${cardWidth}px;
+    height: ${cardHeight}px;
 `;
 
 const EmphasisText = styled.Text`
@@ -170,12 +176,12 @@ const Text = styled.Text`
 `;
 
 const TextDiscreet = styled.Text`
-    color: white;
     opacity: 0.8;
+    color: white;
     font-size: 16px;
     font-weight: 400;
-    align-self: center;
     padding-top: 20px;
+    align-self: center;
 `;
 
 const TextContainer = styled.View``;
@@ -184,7 +190,7 @@ const DetailsModal = styled.Modal``;
 
 const Touchable = styled.TouchableOpacity`
     width: 50px;
-    height: ${cardHeight}px;
     align-items: center;
     justify-content: center;
+    height: ${cardHeight}px;
 `

@@ -14,6 +14,4 @@ const Container = styled.View`
     justify-content: center;
 `;
 
-const Logo = styled.Image`
-       
-`
+const Logo = styled.Image``

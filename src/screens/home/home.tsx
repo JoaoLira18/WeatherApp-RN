@@ -1,4 +1,4 @@
-import { Alert, StatusBar } from "react-native";
+import { StatusBar } from "react-native";
 import styled from "styled-components/native";
 import React, { useEffect, useState } from "react";
 import { CurrentType } from "../../assets/@types/requestReturn";
@@ -27,7 +27,7 @@ export const Home = () => {
     const storeData = async () => {
 
         const storageKey = '@cities'
-        const cities = data.map((item: any) => item.name)
+        const cities = data.map((location: CurrentType) => location.name)
 
         try {
             await AsyncStorage.setItem(storageKey, JSON.stringify(cities))
@@ -43,9 +43,9 @@ export const Home = () => {
             const cities = dataFromAsync ? JSON.parse(dataFromAsync) : []
 
             if (cities !== null) {
-                cities.forEach(async (city: any) => {
+                cities.forEach(async (city: string) => {
                     await RequestWeather.getCurrent(city)
-                        .then(({ data }: any) => {
+                        .then(({ data }) => {
                             validatingData(data)
                         })
                 });
@@ -73,8 +73,8 @@ export const Home = () => {
     }
 
     return <Container>
-        <StatusBar backgroundColor="#1C3F65" barStyle="light-content" />
-        <Header dataFromRequest={(data: any) => validatingData(data)} ></Header>
+        <StatusBar backgroundColor="#202225" barStyle="light-content" />
+        <Header dataFromRequest={(data) => validatingData(data)} ></Header>
         <Body>
             <WeatherPlacesList
                 loading={loading}
@@ -87,32 +87,12 @@ export const Home = () => {
 
 const Container = styled.View`
     flex: 1;
-    background-color: #1C3F65;
     padding-left: 10px;
     padding-right: 10px;
+    background-color: #202225;
 `;
 
 const Body = styled.View`
 margin-top: 15px;
     margin-bottom: 80px;
 `;
-
-const CenterLoad = styled.View`
-    height: 90%;
-    align-items: center;
-    justify-content: center;
-`;
-
-const LoadList = styled.ActivityIndicator``
-
-const Center = styled.View`
-    width: 100%;
-    height: 500px;
-    align-items: center;
-    justify-content: center;
-`
-
-const Text = styled.Text`
-    font-size: 24px;
-    color: #ffffff6c;
-`

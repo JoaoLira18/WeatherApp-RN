@@ -1,16 +1,16 @@
 import styled from 'styled-components/native'
-import React, { useEffect, useRef, useState } from "react";
 import { StyleSheet, Dimensions } from "react-native";
+import React, { useEffect, useRef, useState } from "react";
 import Animated, { useAnimatedStyle, useSharedValue, withTiming } from "react-native-reanimated";
 
 import { Icon } from "./icon";
-import { CurrentType, ForecastType } from "../assets/@types/requestReturn";
+import { DataFromRequestType } from "../assets/@types/type";
 import { RequestWeather } from '../services/api/requestWeather';
 
 const { width } = Dimensions.get('screen')
 
-export const AddCountryButton = ({ dataFromRequest }: any) => {
-
+export const AddCountryButton = ({ dataFromRequest }: DataFromRequestType) => {
+    // HTMLInputElement
     const ref_input = useRef<any>();
     const offset = useSharedValue(0)
     const [textInput, setTextInput] = useState('')
@@ -93,10 +93,4 @@ const SearchButton = styled.TouchableOpacity`
     align-items: center;
     justify-content: center;
     background-color: #D9D9D9;
-`;
-
-const Container = styled.View`
-    height: 60px;
-    overflow: hidden;
-    margin-right: 30px;
 `;

@@ -5,28 +5,36 @@ import { FlatList, FlatListProps, Image } from 'react-native';
 import { Card } from "./card";
 import { CurrentType } from "../assets/@types/requestReturn";
 
-export const WeatherPlacesList = ({ dataFromRequest, removeCity, loading }: any) => {
+type WeatherPlaceListType = {
+    dataFromRequest: CurrentType[] | []
+    removeCity: (city: string) => void
+    loading: boolean
+}
+
+export const WeatherPlacesList = ({ dataFromRequest, removeCity, loading }: WeatherPlaceListType) => {
+
+    let reversedArray = dataFromRequest.slice(0).reverse()
 
     return (
         loading
             ? <Center><LoadList /></Center>
-            : <ListPlaces
-                data={dataFromRequest}
+            : dataFromRequest.length > 0
+            && <ListPlaces
+                data={reversedArray}
                 showsVerticalScrollIndicator={false}
                 keyExtractor={(item: CurrentType) => item.name}
-                ListEmptyComponent={() =>
-                    <Center>
-                        <Image
-                            style={{ width: 150, height: 150 }}
-                            source={require("../assets/img/not-found-destination.png")}
-                        />
-                        <Text>Without place or connection</Text>
-                    </Center>
-                }
-                renderItem={({ item }: any) =>
-                    <Card data={item} removeCity={(city: any) => removeCity(city)} />
+
+                renderItem={({ item }) =>
+                    <Card data={item} removeCity={(city) => removeCity(city)} />
                 }
             />
+        // : <Center>
+        //     <Image
+        //         style={{ width: 150, height: 150 }}
+        //         source={require("../assets/img/not-found-destination.png")}
+        //     />
+        //     <Text>Without place or connection</Text>
+        // </Center>
     )
 }
 

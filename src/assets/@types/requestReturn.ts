@@ -29,11 +29,7 @@ export type CurrentType = {
     },
     timezone: number,
     visibility: number,
-    weather: [
-        [
-            string
-        ]
-    ],
+    weather: Weather[],
     wind: {
         deg: number,
         gust: number,
@@ -42,9 +38,21 @@ export type CurrentType = {
 }
 
 export type ForecastType = {
-    cod: string,
-    message: number,
+    city: {
+        coord: {
+            lat: number,
+            lon: number
+        },
+        country: string,
+        id: number,
+        name: string,
+        population: number,
+        sunrise: number,
+        sunset: number,
+        timezone: number
+    },
     cnt: number,
+    cod: string,
     list: list[]
 }
 
@@ -61,14 +69,7 @@ export type list = {
         humidity: number,
         temp_kf: number
     },
-    weather: [
-        {
-            id: number,
-            main: string,
-            description: string,
-            icon: string
-        }
-    ],
+    weather: Weather[],
     clouds: {
         all: number
     },
@@ -88,37 +89,9 @@ export type list = {
     dt_txt: string
 }
 
-// export type Request = {
-//     type: string
-//     query: string
-//     language: string
-// }
-
-// export type Location = {
-//     name: string
-//     region: string,
-//     country: string,
-//     localtime: string,
-// }
-
-// export type Current = {
-//     is_day: string
-//     precip: number
-//     pressure: number
-//     humidity: number
-//     feelslike: number
-//     wind_speed: number
-//     visibility: number
-//     cloudcover: number
-//     wind_degree: number
-//     temperature: number
-//     observation_time: string
-//     weather_icons: string[]
-//     weather_descriptions: string[]
-// }
-
-// export interface Weather {
-//     request: Request
-//     current: Current
-//     location: Location
-// }
+type Weather = {
+    id: number,
+    main: string,
+    description: string,
+    icon: string
+}

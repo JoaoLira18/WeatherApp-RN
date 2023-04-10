@@ -20,10 +20,9 @@ type IconProps = {
     name: string
     size?: number
     color?: string
-    weather?: string[]
 }
 
-export const Icon = ({ name, size = 20, color = 'black', style, lib = 'fontawesome', weather = [] }: IconProps) => {
+export const Icon = ({ name, size = 20, color = 'black', style, lib = 'fontawesome'}: IconProps) => {
 
     switch (lib.replace(/[^a-zA-Z0-9]/g, "").toLowerCase()) {
         case "zocial":

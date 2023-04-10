@@ -1,12 +1,14 @@
 import React from "react";
 import styled from "styled-components/native";
+import { DataFromRequestType } from "../assets/@types/type";
 
 import { AddCountryButton } from "./addCityButton";
 
-export const Header = ({ dataFromRequest }: any) => {
+
+export const Header = ({ dataFromRequest }: DataFromRequestType) => {
     return (
         <Container>
-            <AddCountryButton dataFromRequest={(data: any) => dataFromRequest(data)} />
+            <AddCountryButton dataFromRequest={(data) => dataFromRequest(data)} />
         </Container>
     )
 }
